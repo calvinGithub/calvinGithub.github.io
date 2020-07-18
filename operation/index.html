@@ -17,10 +17,20 @@
   <meta name="description" content="分享电商技术，微服务，面试题，学习笔记">
   <meta name="author" content="calvin">
   <meta name="keywords" content="">
-  <title>归档 - calvin的博客</title>
+  <title>运维进阶 - calvin的博客</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
 
 
 <!-- 主题依赖的图标库，不要自行修改 -->
@@ -242,28 +252,10 @@
               <div class="col-12 col-md-10 m-auto">
                 
 
-<div class="list-group">
-  <p class="h4">共计 2 篇文章</p>
-  <hr>
-  
-    
-      
-      <p class="h5">2020</p>
-    
-    <a href="/2020/07/18/Ansible%E8%84%9A%E6%9C%AC%E9%83%A8%E7%BD%B2Kubernetes%20v1.18%20%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">Ansible脚本部署Kubernetes v1.18 高可用集群</span>
-      <span style="float: right;">07-18</span>
-    </a>
-  
-    
-    <a href="/2020/07/05/%E5%9F%BA%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">基于数据库实现微服务动态路由</span>
-      <span style="float: right;">07-05</span>
-    </a>
-  
+<div class="page-content">
+  <p><a href="https://www.baidu.com/" target="_blank" rel="noopener">IO基本操作</a></p>
+
 </div>
-
-
 
               </div>
             </div>
@@ -354,7 +346,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "归档&nbsp;",
+        "运维进阶&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,
@@ -368,6 +360,21 @@
   </script>
 
 
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
 
 
 
