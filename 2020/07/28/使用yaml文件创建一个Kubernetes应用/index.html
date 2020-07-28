@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="分享电商技术，微服务，面试题，学习笔记">
+  <meta name="author" content="calvin">
+  <meta name="keywords" content="">
+  <title>使用yaml文件创建一个Kubernetes应用 - calvin的博客</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>calvin的博客</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/java/">
+                    
+                    Java基础
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/docs/guide/" target="_blank" rel="noopener">
+                    
+                    设计模式
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/docs/example/" target="_blank" rel="noopener">
+                    
+                    JVM
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/docs/icon/" target="_blank" rel="noopener">
+                    
+                    Spring源码
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/docs/icon/" target="_blank" rel="noopener">
+                    
+                    微服务实战
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/docs/icon/" target="_blank" rel="noopener">
+                    
+                    常用技术栈
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/operation/">
+                    
+                    运维进阶
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/docs/icon/" target="_blank" rel="noopener">
+                    
+                    数据结构
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/docs/icon/" target="_blank" rel="noopener">
+                    
+                    常用算法
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/docs/icon/" target="_blank" rel="noopener">
+                    
+                    面试题分享
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('https://ecblog.oss-cn-hangzhou.aliyuncs.com/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-07-28 20:49">
+      2020年7月28日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      944 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      13
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <p>本篇笔者将通过编写yaml文件，执行kubectl命令，实现Kubernetes应用的运行。为了比较方便的验证应用创建是否成功，笔者以微服务组件Eureka Server作为演示（有UI页面，方便验证）。</p>
+<p>备注：笔者以下操作均在k8s-master1机器上执行（选择任意一个Master节点执行均可）</p>
+<h3 id="一、编写yaml文件"><a href="#一、编写yaml文件" class="headerlink" title="一、编写yaml文件"></a>一、编写yaml文件</h3><h4 id="1、yaml语法"><a href="#1、yaml语法" class="headerlink" title="1、yaml语法"></a>1、yaml语法</h4><p>如果大家对k8s-yaml的语法还是很熟悉，可以参考博客：<a href="https://www.cnblogs.com/fuyuteng/p/9460534.html" target="_blank" rel="noopener">https://www.cnblogs.com/fuyuteng/p/9460534.html</a></p>
+<h4 id="2、eureka-yaml"><a href="#2、eureka-yaml" class="headerlink" title="2、eureka.yaml"></a>2、eureka.yaml</h4><p>针对Eureka应用，笔者的yaml文件如下，大家可以直接复制使用，已验证。</p>
+<pre><code class="hljs yaml"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Service</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">eureka</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">default</span>
+  <span class="hljs-attr">labels:</span>
+    <span class="hljs-attr">app:</span> <span class="hljs-string">eureka</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">type:</span> <span class="hljs-string">NodePort</span>
+  <span class="hljs-attr">ports:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">port:</span> <span class="hljs-number">8761</span>
+    <span class="hljs-attr">nodePort:</span> <span class="hljs-number">30090</span> <span class="hljs-comment">#service对外开放端口</span>
+  <span class="hljs-attr">selector:</span>
+    <span class="hljs-attr">app:</span> <span class="hljs-string">eureka</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">apps/v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Deployment</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">labels:</span>
+    <span class="hljs-attr">app:</span> <span class="hljs-string">eureka</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">eureka</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">replicas:</span> <span class="hljs-number">3</span> <span class="hljs-comment">#运行容器的副本数，修改这里可以快速修改分布式节点数量</span>
+  <span class="hljs-attr">selector:</span>
+    <span class="hljs-attr">matchLabels:</span>
+      <span class="hljs-attr">app:</span> <span class="hljs-string">eureka</span>
+  <span class="hljs-attr">template:</span>
+    <span class="hljs-attr">metadata:</span>
+      <span class="hljs-attr">labels:</span>
+        <span class="hljs-attr">app:</span> <span class="hljs-string">eureka</span>
+    <span class="hljs-attr">spec:</span>
+      <span class="hljs-attr">containers:</span> <span class="hljs-comment">#docker容器的配置</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">eureka</span>
+        <span class="hljs-attr">image:</span> <span class="hljs-string">taskbeez/eureka-server:master</span> <span class="hljs-comment"># pull镜像的地址</span>
+		<span class="hljs-attr">imagePullPolicy:</span> <span class="hljs-string">IfNotPresent</span>
+        <span class="hljs-attr">ports:</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-attr">containerPort:</span> <span class="hljs-number">8761</span> <span class="hljs-comment"># 容器对外开放端口</span></code></pre>
+
+<p>设置image pull的地址，可以设置从Docker私仓拉取，这里笔者默认从DockerHub仓库拉取Eureka镜像。设置好容器的默认对外接口接口和需要运行容器的副本数。如果需要设置宿主机运行的对外端口，需要注意查看k8s的默认端口范围，可以通过如下的方式查看：</p>
+<pre><code class="hljs shell">[root@k8s-master1 /]# cd /opt/kubernetes/cfg
+[root@k8s-master1 cfg]# cat kube-apiserver.conf 
+KUBE_APISERVER_OPTS="--logtostderr=false \
+--v=2 \
+--log-dir=/opt/kubernetes/logs \
+--etcd-servers=https://10.1.34.69:2379,https://10.1.34.71:2379,https://10.1.34.73:2379 \
+--bind-address=10.1.34.68 \
+--secure-port=6443 \
+--advertise-address=10.1.34.68 \
+--allow-privileged=true \
+--service-cluster-ip-range=10.0.0.0/24 \
+--enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,ResourceQuota,NodeRestriction \
+--authorization-mode=RBAC,Node \
+--enable-bootstrap-token-auth=true \
+--token-auth-file=/opt/kubernetes/cfg/token.csv \
+--service-node-port-range=30000-32767 \
+--kubelet-client-certificate=/opt/kubernetes/ssl/server.pem \
+--kubelet-client-key=/opt/kubernetes/ssl/server-key.pem \
+--tls-cert-file=/opt/kubernetes/ssl/server.pem  \
+--tls-private-key-file=/opt/kubernetes/ssl/server-key.pem \
+--client-ca-file=/opt/kubernetes/ssl/ca.pem \
+--service-account-key-file=/opt/kubernetes/ssl/ca-key.pem \
+--etcd-cafile=/opt/kubernetes/ssl/etcd/ca.pem \
+--etcd-certfile=/opt/kubernetes/ssl/etcd/server.pem \
+--etcd-keyfile=/opt/kubernetes/ssl/etcd/server-key.pem \
+--audit-log-maxage=30 \
+--audit-log-maxbackup=3 \
+--audit-log-maxsize=100 \
+--audit-log-path=/opt/kubernetes/logs/k8s-audit.log"</code></pre>
+
+<p>如果需要修改k8s默认的端口范围，可以参考博客：<a href="https://blog.csdn.net/qq1445654576/article/details/104581296/" target="_blank" rel="noopener">https://blog.csdn.net/qq1445654576/article/details/104581296/</a> </p>
+<h3 id="二、执行yaml文件"><a href="#二、执行yaml文件" class="headerlink" title="二、执行yaml文件"></a>二、执行yaml文件</h3><h4 id="1、创建存放yaml文件的文件夹"><a href="#1、创建存放yaml文件的文件夹" class="headerlink" title="1、创建存放yaml文件的文件夹"></a>1、创建存放yaml文件的文件夹</h4><pre><code class="hljs shell">[root@k8s-master1 ~]# mkdir -p deploy/eureka
+[root@k8s-master1 ~]# cd deploy/eureka/</code></pre>
+
+<p>将上文中写好的eureka.yaml文件上传到eureka文件夹下。</p>
+<h4 id="2、kubectl命令"><a href="#2、kubectl命令" class="headerlink" title="2、kubectl命令"></a>2、kubectl命令</h4><p>由于在windows电脑上编辑，空格与unix不一样，执行会导致校验yaml格式不通过。</p>
+<pre><code class="hljs shell">[root@k8s-master1 deploy]# kubectl apply -f eureka/
+service/eureka unchanged
+error: error parsing eureka/eureka.yaml: error converting YAML to JSON: yaml: line 20: found character that cannot start any token</code></pre>
+
+<p>检查到对应的位置，处理好空格，再次执行</p>
+<pre><code class="hljs shell">[root@k8s-master1 deploy]# kubectl apply -f eureka/
+service/eureka created
+deployment.apps/eureka created</code></pre>
+
+
+
+<h3 id="三、验证k8s应用部署情况"><a href="#三、验证k8s应用部署情况" class="headerlink" title="三、验证k8s应用部署情况"></a>三、验证k8s应用部署情况</h3><h4 id="1、查看Services"><a href="#1、查看Services" class="headerlink" title="1、查看Services"></a>1、查看Services</h4><p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/k8s_eureka_services.png" srcset="/img/loading.gif" alt=""></p>
+<h4 id="2、查看Deployments"><a href="#2、查看Deployments" class="headerlink" title="2、查看Deployments"></a>2、查看Deployments</h4><p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/k8s_eureka_deployments.png" srcset="/img/loading.gif" alt=""></p>
+<h4 id="3、查看运行Pods"><a href="#3、查看运行Pods" class="headerlink" title="3、查看运行Pods"></a>3、查看运行Pods</h4><p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/k8s_eureka_pods.png" srcset="/img/loading.gif" alt=""></p>
+<h4 id="4、访问Eureka-Server地址验证应用部署"><a href="#4、访问Eureka-Server地址验证应用部署" class="headerlink" title="4、访问Eureka Server地址验证应用部署"></a>4、访问Eureka Server地址验证应用部署</h4><p>通过查看Pods，可以看到Eureka的容器运行的3个节点分别为：k8s-node2，k8s-master1和k8s-master3，固定端口在yaml中设置的是：30090。</p>
+<p>k8s会根据集群中的机器做动态的调度，运行在节点上。如果需要指定容器运行所在的宿主机，也是在yaml中做相应的配置修改。</p>
+<table>
+<thead>
+<tr>
+<th align="center">节点名称</th>
+<th align="center">IP</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">k8s-master1</td>
+<td align="center">10.1.34.68</td>
+</tr>
+<tr>
+<td align="center">k8s-master3</td>
+<td align="center">10.1.34.70</td>
+</tr>
+<tr>
+<td align="center">k8s-node2</td>
+<td align="center">10.1.34.72</td>
+</tr>
+</tbody></table>
+<p>浏览器访问：<a href="http://10.1.34.70:30090/" target="_blank" rel="noopener">http://10.1.34.70:30090/</a></p>
+<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/k8s/70_30090_eureka.png" srcset="/img/loading.gif" alt=""></p>
+<p>浏览器访问：<a href="http://10.1.34.72:30090/" target="_blank" rel="noopener">http://10.1.34.72:30090/</a></p>
+<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/k8s/72_30090_eureka.png" srcset="/img/loading.gif" alt=""></p>
+<p>浏览器访问：<a href="http://10.1.34.68:30090/" target="_blank" rel="noopener">http://10.1.34.68:30090/</a></p>
+<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/k8s/68_30090_eureka.png" srcset="/img/loading.gif" alt=""></p>
+<p>至此，通过k8s运行docker集群的示例已经验证，搭建成功。</p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/yaml/">yaml</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/07/28/k8s%E4%B8%AD%E6%90%AD%E5%BB%BANexus%E7%A7%81%E4%BB%93/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">k8s中搭建Nexus私仓</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/07/28/Centos7%E5%AE%89%E8%A3%85Ansible%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/">
+                        <span class="hidden-mobile">Centos7安装Ansible异常问题排查</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <!--<div>-->
+      <!--<a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>-->
+      <!--<i class="iconfont icon-love"></i>-->
+      <!--<a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">-->
+        <!--<span>Fluid</span></a>-->
+    <!--</div>-->
+    
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "使用yaml文件创建一个Kubernetes应用&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
