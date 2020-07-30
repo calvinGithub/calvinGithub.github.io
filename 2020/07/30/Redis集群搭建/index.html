@@ -296,7 +296,7 @@
 <li>当集群中的某一个节点故障时，redis还可以继续处理客户端的请求。</li>
 </ul>
 <p>一个 redis 集群包含 16384 个哈希槽（hash slot），数据库中的每个数据都属于这16384个哈希槽中的一个。集群使用公式 CRC16(key) % 16384 来计算键 key 属于哪个槽。集群中的每一个节点负责处理一部分哈希槽。</p>
-<h3 id="一、Redis-Cluster机器规划"><a href="#一、Redis-Cluster机器规划" class="headerlink" title="一、Redis Cluster机器规划"></a>一、Redis Cluster机器规划</h3><h4 id="1、环境信息"><a href="#1、环境信息" class="headerlink" title="1、环境信息"></a>1、环境信息</h4><p>操作系统：Centos7</p>
+<h3 id="一、集群机器规划"><a href="#一、集群机器规划" class="headerlink" title="一、集群机器规划"></a>一、集群机器规划</h3><h4 id="1、环境信息"><a href="#1、环境信息" class="headerlink" title="1、环境信息"></a>1、环境信息</h4><p>操作系统：Centos7</p>
 <p>redis版本：5.0.8</p>
 <h4 id="2、机器规划"><a href="#2、机器规划" class="headerlink" title="2、机器规划"></a>2、机器规划</h4><table>
 <thead>
