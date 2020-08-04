@@ -17,7 +17,7 @@
   <meta name="description" content="分享电商技术，微服务，面试题，学习笔记">
   <meta name="author" content="calvin">
   <meta name="keywords" content="">
-  <title>k8s中搭建MinIO分布式存储集群 - calvin的博客</title>
+  <title>ElasticSearch集群搭建 - calvin的博客</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -236,8 +236,8 @@
               
   <div class="mt-3 post-meta">
     <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-    <time datetime="2020-08-02 10:25">
-      2020年8月2日 上午
+    <time datetime="2020-08-04 18:31">
+      2020年8月4日 晚上
     </time>
   </div>
 
@@ -247,7 +247,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1k 字
+      1.2k 字
     </span>
   
 
@@ -288,8 +288,8 @@
           <div class="post-content mx-auto" id="post">
             
             <article class="markdown-body">
-              <p>本篇笔者将通过编写yaml文件，执行kubectl命令，搭建MinIO集群。</p>
-<p>备注：笔者以下操作均在k8s-master1机器上执行（选择任意一个Master节点执行均可）</p>
+              <p>Elaticsearch，简称为es， es是一个开源的高扩展的分布式全文检索引擎，它可以近乎实时的存储、检索数据；本身扩展性很好，可以扩展到上百台服务器，处理PB级别（大数据时代）的数据。es也使用Java开发并使用Lucene作为其核心来实现所有索引和搜索的功能，但是它的目的是通过简单的RESTful API来隐藏Lucene的复杂性，从而让全文搜索变得简单。</p>
+<p>接下来，笔者将选用3台机器搭建ElasticSearch集群。</p>
 <h3 id="一、集群机器规划"><a href="#一、集群机器规划" class="headerlink" title="一、集群机器规划"></a>一、集群机器规划</h3><h4 id="1、环境信息"><a href="#1、环境信息" class="headerlink" title="1、环境信息"></a>1、环境信息</h4><p>操作系统：Centos7</p>
 <h4 id="2、机器规划"><a href="#2、机器规划" class="headerlink" title="2、机器规划"></a>2、机器规划</h4><table>
 <thead>
@@ -299,183 +299,177 @@
 </tr>
 </thead>
 <tbody><tr>
-<td align="center">paasmin01</td>
-<td align="center">10.1.34.12</td>
+<td align="center">paasmd01</td>
+<td align="center">10.1.34.74</td>
 </tr>
 <tr>
-<td align="center">paasmin02</td>
-<td align="center">10.1.34.13</td>
+<td align="center">paasredis01</td>
+<td align="center">10.1.34.49</td>
 </tr>
 <tr>
-<td align="center">paasmin03</td>
-<td align="center">10.1.34.14</td>
-</tr>
-<tr>
-<td align="center">paasmin04</td>
-<td align="center">10.1.34.15</td>
+<td align="center">paasredis02</td>
+<td align="center">10.1.34.50</td>
 </tr>
 </tbody></table>
-<h4 id="3、k8s集群node节点分配标签"><a href="#3、k8s集群node节点分配标签" class="headerlink" title="3、k8s集群node节点分配标签"></a>3、k8s集群node节点分配标签</h4><pre><code class="hljs shell">[root@k8s-master1 ~]# kubectl label nodes paasmin01 minio-server=true
-node/paasmin01 labeled
-[root@k8s-master1 ~]# kubectl label nodes paasmin02 minio-server=true
-node/paasmin02 labeled
-[root@k8s-master1 ~]# kubectl label nodes paasmin03 minio-server=true
-node/paasmin03 labeled
-[root@k8s-master1 ~]# kubectl label nodes paasmin04 minio-server=true
-node/paasmin04 labeled</code></pre>
+<h3 id="二、集群搭建"><a href="#二、集群搭建" class="headerlink" title="二、集群搭建"></a>二、集群搭建</h3><h4 id="1、下载ElasticSearch安装包"><a href="#1、下载ElasticSearch安装包" class="headerlink" title="1、下载ElasticSearch安装包"></a>1、下载ElasticSearch安装包</h4><p>官网：<a href="https://www.elastic.co/" target="_blank" rel="noopener">https://www.elastic.co/</a></p>
+<p>笔者下载的是7.6.1 linux版本</p>
+<h4 id="2、修改ES配置文件"><a href="#2、修改ES配置文件" class="headerlink" title="2、修改ES配置文件"></a>2、修改ES配置文件</h4><p>这里以10.1.34.74为例，列出elaticsearch.yml修改项</p>
+<pre><code class="hljs yml"><span class="hljs-comment"># ======================== Elasticsearch Configuration =========================</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># <span class="hljs-doctag">NOTE:</span> Elasticsearch comes with reasonable defaults for most settings.</span>
+<span class="hljs-comment">#       Before you set out to tweak and tune the configuration, make sure you</span>
+<span class="hljs-comment">#       understand what are you trying to accomplish and the consequences.</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># The primary way of configuring a node is via this file. This template lists</span>
+<span class="hljs-comment"># the most important settings you may want to configure for a production cluster.</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># Please consult the documentation for further information on configuration options:</span>
+<span class="hljs-comment"># https://www.elastic.co/guide/en/elasticsearch/reference/index.html</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># ---------------------------------- Cluster -----------------------------------</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># Use a descriptive name for your cluster:</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-attr">cluster.name:</span> <span class="hljs-string">你自定义的集群名称</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># ------------------------------------ Node ------------------------------------</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># Use a descriptive name for the node:</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-attr">node.name:</span> <span class="hljs-string">master</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># Add custom attributes to the node:</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment">#node.attr.rack: r1</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># ----------------------------------- Paths ------------------------------------</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># Path to directory where to store the data (separate multiple locations by comma):</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-attr">path.data:</span> <span class="hljs-string">/opt/elasticsearch/data</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># Path to log files:</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-attr">path.logs:</span> <span class="hljs-string">/opt/elasticsearch/logs</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># ----------------------------------- Memory -----------------------------------</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># Lock the memory on startup:</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment">#bootstrap.memory_lock: true</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># Make sure that the heap size is set to about half the memory available</span>
+<span class="hljs-comment"># on the system and that the owner of the process is allowed to use this</span>
+<span class="hljs-comment"># limit.</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># Elasticsearch performs poorly when the system is swapping the memory.</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># ---------------------------------- Network -----------------------------------</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># Set the bind address to a specific IP (IPv4 or IPv6):</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-attr">network.host:</span> <span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># Set a custom port for HTTP:</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment">#http.port: 9200</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># For more information, consult the network module documentation.</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># --------------------------------- Discovery ----------------------------------</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># Pass an initial list of hosts to perform discovery when this node is started:</span>
+<span class="hljs-comment"># The default list of hosts is ["127.0.0.1", "[::1]"]</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-attr">discovery.seed_hosts:</span> <span class="hljs-string">["10.1.34.74",</span> <span class="hljs-string">"10.1.34.49"</span><span class="hljs-string">,</span> <span class="hljs-string">"10.1.34.50"</span><span class="hljs-string">]</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># Bootstrap the cluster using an initial set of master-eligible nodes:</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-attr">cluster.initial_master_nodes:</span> <span class="hljs-string">["master",</span> <span class="hljs-string">"node-1"</span><span class="hljs-string">,</span> <span class="hljs-string">"node-2"</span><span class="hljs-string">]</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># For more information, consult the discovery and cluster formation module documentation.</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># ---------------------------------- Gateway -----------------------------------</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># Block initial recovery after a full cluster restart until N nodes are started:</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment">#gateway.recover_after_nodes: 3</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># For more information, consult the gateway module documentation.</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># ---------------------------------- Various -----------------------------------</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment"># Require explicit names when deleting indices:</span>
+<span class="hljs-comment">#</span>
+<span class="hljs-comment">#action.destructive_requires_name: true</span>
 
-<p>给规划的机器设置标签，作为k8s的调度规则。</p>
-<p>查看机器的标签：</p>
-<pre><code class="hljs moonscript">[root@k8s-master1 ~]# kubectl get nodes <span class="hljs-comment">--show-labels</span>
-NAME          STATUS   ROLES    AGE     VERSION   LABELS
-paasmin01     Ready    &lt;none&gt;   <span class="hljs-number">2</span>m55s   v1<span class="hljs-number">.18</span><span class="hljs-number">.6</span>   beta.kubernetes.<span class="hljs-built_in">io</span>/arch=amd64,beta.kubernetes.<span class="hljs-built_in">io</span>/<span class="hljs-built_in">os</span>=linux,kubernetes.<span class="hljs-built_in">io</span>/arch=amd64,kubernetes.<span class="hljs-built_in">io</span>/hostname=paasmin01,kubernetes.<span class="hljs-built_in">io</span>/<span class="hljs-built_in">os</span>=linux,minio-server=<span class="hljs-literal">true</span>
-paasmin02     Ready    &lt;none&gt;   <span class="hljs-number">3</span>m31s   v1<span class="hljs-number">.18</span><span class="hljs-number">.6</span>   beta.kubernetes.<span class="hljs-built_in">io</span>/arch=amd64,beta.kubernetes.<span class="hljs-built_in">io</span>/<span class="hljs-built_in">os</span>=linux,kubernetes.<span class="hljs-built_in">io</span>/arch=amd64,kubernetes.<span class="hljs-built_in">io</span>/hostname=paasmin02,kubernetes.<span class="hljs-built_in">io</span>/<span class="hljs-built_in">os</span>=linux,minio-server=<span class="hljs-literal">true</span>
-paasmin03     Ready    &lt;none&gt;   <span class="hljs-number">2</span>m39s   v1<span class="hljs-number">.18</span><span class="hljs-number">.6</span>   beta.kubernetes.<span class="hljs-built_in">io</span>/arch=amd64,beta.kubernetes.<span class="hljs-built_in">io</span>/<span class="hljs-built_in">os</span>=linux,kubernetes.<span class="hljs-built_in">io</span>/arch=amd64,kubernetes.<span class="hljs-built_in">io</span>/hostname=paasmin03,kubernetes.<span class="hljs-built_in">io</span>/<span class="hljs-built_in">os</span>=linux,minio-server=<span class="hljs-literal">true</span>
-paasmin04     Ready    &lt;none&gt;   <span class="hljs-number">4</span>m21s   v1<span class="hljs-number">.18</span><span class="hljs-number">.6</span>   beta.kubernetes.<span class="hljs-built_in">io</span>/arch=amd64,beta.kubernetes.<span class="hljs-built_in">io</span>/<span class="hljs-built_in">os</span>=linux,kubernetes.<span class="hljs-built_in">io</span>/arch=amd64,kubernetes.<span class="hljs-built_in">io</span>/hostname=paasmin04,kubernetes.<span class="hljs-built_in">io</span>/<span class="hljs-built_in">os</span>=linux,minio-server=<span class="hljs-literal">true</span></code></pre>
+<span class="hljs-attr">http.cors.enabled:</span> <span class="hljs-literal">true</span>
+<span class="hljs-attr">http.cors.allow-origin:</span> <span class="hljs-string">"*"</span></code></pre>
 
-<p>可以看到4台机器：<strong>minio-server=true</strong></p>
-<h3 id="二、YAML文件"><a href="#二、YAML文件" class="headerlink" title="二、YAML文件"></a>二、YAML文件</h3><h4 id="1、下载yaml文件"><a href="#1、下载yaml文件" class="headerlink" title="1、下载yaml文件"></a>1、下载yaml文件</h4><pre><code class="hljs shell">[root@k8s-master1 deploy]# wget https://download.osichina.net/tools/k8s/yaml/minio/minio-distributed-headless-service.yaml
-[root@k8s-master1 deploy]# wget https://download.osichina.net/tools/k8s/yaml/minio/minio-distributed-daemonset.yaml 
-[root@k8s-master1 deploy]# wget https://download.osichina.net/tools/k8s/yaml/minio/minio-distributed-service.yaml</code></pre>
+<p>其中：/opt/elasticsearch/data存储es产生的数据，/opt/elasticsearch/logs存储es产生的日志。</p>
+<p>对应的文件夹都要设置777权限。</p>
+<p>备注：<strong>10.1.34.49和10.1.34.50机器的node.name分别为node-1和node-2，其他配置同10.1.34.74</strong>。</p>
+<h4 id="3、新建用户"><a href="#3、新建用户" class="headerlink" title="3、新建用户"></a>3、新建用户</h4><p>上面的es配置文件修改后，我们开始运行es。</p>
+<pre><code class="hljs shell">[root@PaasMD01 /]# cd /usr/software/elasticsearch/bin/
+[root@PaasMD01 bin]# ./elasticsearch</code></pre>
 
-
-
-<h4 id="2、修改yaml文件"><a href="#2、修改yaml文件" class="headerlink" title="2、修改yaml文件"></a>2、修改yaml文件</h4><p><strong>（1）修改headless-service</strong></p>
-<pre><code class="hljs shell">[root@k8s-master1 minio]# vi minio-distributed-headless-service.yaml 
-apiVersion: v1
-kind: Service
-metadata:
-  name: minio
-  namespace: calvin # 修改为你自己的命名空间名
-  labels:
-    app: minio
-spec:
-  publishNotReadyAddresses: true
-  ports:
-    - port: 9000
-      name: minio
-  selector:
-    app: minio</code></pre>
-
-<p><strong>（2）修改service</strong></p>
-<pre><code class="hljs shell">[root@k8s-master1 minio]# vi minio-distributed-service.yaml 
-apiVersion: v1
-kind: Service
-metadata:
-  name: minio
-  namespace: calvin  # 修改为你自己的命名空间名
-spec:
-  type: NodePort
-  ports:
-    - port: 9000
-      targetPort: 9000
-      protocol: TCP
-      nodePort: 30900  # 设置固定端口
-  selector:
-    app: minio</code></pre>
-
-<p><strong>（3）修改daemonset</strong></p>
-<pre><code class="hljs shell">[root@k8s-master1 minio]# vi minio-distributed-daemonset.yaml 
-apiVersion: apps/v1
-kind: DaemonSet
-metadata:
-  name: minio
-  namespace: calvin  # 修改为你自己的命名空间名
-  labels:
-    app: minio
-spec:
-  selector:
-    matchLabels:
-      app: minio
-  template:
-    metadata:
-      labels:
-        app: minio
-    spec:
-      # We only deploy minio to the specified nodes. select your nodes by using `kubectl label node hostname1 -l minio-server=true`
-      nodeSelector:
-        minio-server: "true"  # 指定含有特定标签的机器运行
-      # This is to maximize network performance, the headless service can be used to connect to a random host.
-      hostNetwork: true
-      # We're just using a hostpath. This path must be the same on all servers, and should be the largest, fastest block device you can fit.
-      volumes:
-      - name: storage
-        hostPath:
-          path: /tmp/export/
-      containers:
-      - name: minio
-        env:
-        - name: MINIO_ACCESS_KEY
-          value: "admin"  # 修改用户名
-        - name: MINIO_SECRET_KEY
-          value: "admin123" # 修改密码
-        image: minio/minio:RELEASE.2020-05-08T02-40-49Z
-        # Unfortunately you must manually define each server. Perhaps autodiscovery via DNS can be implemented in the future.
-        args:
-        - server
-        - http://10.1.34.1&#123;2...5&#125;/data/minio  # 修改server机器
-        ports:
-        - containerPort: 9000
-        volumeMounts:
-        - name: storage
-          mountPath: /data/minio/</code></pre>
-
-
-
-<h4 id="3、执行yaml文件"><a href="#3、执行yaml文件" class="headerlink" title="3、执行yaml文件"></a>3、执行yaml文件</h4><pre><code class="hljs shell">[root@k8s-master1 deploy]# kubectl apply -f minio/ -n calvin
-daemonset.apps/minio created
-service/minio created
-service/minio configured</code></pre>
+<p>如果通过root用户启动es，会有如下的报错：</p>
+<p><strong>java.lang.RuntimeException: can not run elasticsearch as root</strong></p>
+<p>因为es不支持root用户启动，那么我们新建用户，并赋予用户权限执行es文件夹。</p>
+<pre><code class="hljs shell">[root@PaasMD01 /]# groupadd calvin
+[root@PaasMD01 /]# useradd calvin -g calvin
+[root@PaasMD01 /]# chown -R calvin:calvin /usr/software/elasticsearch</code></pre>
 
 
 
-<h3 id="三、集群验证"><a href="#三、集群验证" class="headerlink" title="三、集群验证"></a>三、集群验证</h3><h4 id="1、查看k8s-dashboard"><a href="#1、查看k8s-dashboard" class="headerlink" title="1、查看k8s dashboard"></a>1、查看k8s dashboard</h4><p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/minio/pods.png" srcset="/img/loading.gif" alt=""></p>
-<h4 id="2、访问MinIO-UI"><a href="#2、访问MinIO-UI" class="headerlink" title="2、访问MinIO UI"></a>2、访问MinIO UI</h4><p>浏览器访问：<a href="http://10.1.34.12:30900/minio/" target="_blank" rel="noopener">http://10.1.34.12:30900/minio/</a></p>
-<p>用户名/密码：admin/admin123</p>
-<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/minio/login.png" srcset="/img/loading.gif" alt=""></p>
-<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/minio/ui.png" srcset="/img/loading.gif" alt=""></p>
-<h4 id="3、Java客户端验证"><a href="#3、Java客户端验证" class="headerlink" title="3、Java客户端验证"></a>3、Java客户端验证</h4><p>代码已经上传到码云：<a href="https://gitee.com/calvin1993/storage-service" target="_blank" rel="noopener">https://gitee.com/calvin1993/storage-service</a></p>
-<p><strong>（关于MinIO的Java客户端使用的文章，笔者后续会单独出文章补充）</strong></p>
-<p>主要修改初始化MinIOClient，给bucket设置Policy，否则直接通过图片地址无法访问，需要权限。</p>
-<p>通过运行代码，可以看到图片已经上传到bucket为calvin，文件夹为test的文件夹下。</p>
-<pre><code class="hljs java"><span class="hljs-keyword">package</span> com.calvin.controller;
+<h4 id="4、修改参数配置"><a href="#4、修改参数配置" class="headerlink" title="4、修改参数配置"></a>4、修改参数配置</h4><p>以上配置都修改后，并且以新建的用户运行后，发现报如下的错误：</p>
+<p><strong>max file descriptors [4096] for elasticsearch process is too low, increase to at least [65535]</strong></p>
+<p>这里我们做如下的参数修改</p>
+<p>（1）修改etc/security/limits.conf，在文件最后面加上</p>
+<pre><code class="hljs shell">* soft nofile 65536
+* hard nofile 65536
+* soft nproc 4096
+* hard nproc 4096</code></pre>
 
-<span class="hljs-keyword">import</span> com.calvin.service.OssUploadService;
-<span class="hljs-keyword">import</span> org.springframework.beans.factory.annotation.Autowired;
-<span class="hljs-keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;
-<span class="hljs-keyword">import</span> org.springframework.web.bind.annotation.RestController;
+<p>注：*后面有空格</p>
+<p>（2）修改/etc/sysctl.conf，在文件最后面加上</p>
+<pre><code class="hljs shell">vm.max_map_count=262144</code></pre>
 
-<span class="hljs-comment">/**</span>
-<span class="hljs-comment"> * <span class="hljs-doctag">@Author</span> calvin</span>
-<span class="hljs-comment"> * <span class="hljs-doctag">@Date</span> 2020/8/1 19:48</span>
-<span class="hljs-comment"> * <span class="hljs-doctag">@Description</span></span>
-<span class="hljs-comment"> * <span class="hljs-doctag">@Version</span> 1.0</span>
-<span class="hljs-comment"> */</span>
-<span class="hljs-meta">@RestController</span>
-<span class="hljs-meta">@RequestMapping</span>(<span class="hljs-string">"/oss"</span>)
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">OssController</span> </span>&#123;
+<p>（3）配置重新生效</p>
+<pre><code class="hljs shell">[root@PaasRedis02 elasticsearch]# sysctl -p
+vm.max_map_count = 262144</code></pre>
 
-    <span class="hljs-meta">@Autowired</span>
-    <span class="hljs-keyword">private</span> OssUploadService ossUploadService;
+<p>最后，重新启动即可。如果想要es后台启动，使用命令：<strong>nohup ./elasticsearch &amp;</strong></p>
+<p>启动后浏览器随便访问一个节点，笔者这里选择master节点访问：<a href="http://10.1.34.74:9200/" target="_blank" rel="noopener">http://10.1.34.74:9200/</a></p>
+<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/es/cluster.png" srcset="/img/loading.gif" alt=""></p>
+<h3 id="三、安装elasticsearch-head"><a href="#三、安装elasticsearch-head" class="headerlink" title="三、安装elasticsearch-head"></a>三、安装elasticsearch-head</h3><p>head插件是一个ES集群的web前端工具，它提供可视化的页面方便用户查看节点信息，对ES进行各种操作，如查询、删除、浏览索引等。<strong>这里笔者主要是想通过安装ElasticHD来查看ES集群是否成功</strong>。</p>
+<h4 id="1、下载elasticsearch-head安装包"><a href="#1、下载elasticsearch-head安装包" class="headerlink" title="1、下载elasticsearch-head安装包"></a>1、下载elasticsearch-head安装包</h4><p>github地址：<a href="https://github.com/mobz/elasticsearch-head/" target="_blank" rel="noopener">https://github.com/mobz/elasticsearch-head/</a></p>
+<h4 id="2、安装nodejs"><a href="#2、安装nodejs" class="headerlink" title="2、安装nodejs"></a>2、安装nodejs</h4><p>nodejs官网下载linux版本：<a href="http://nodejs.cn/download/" target="_blank" rel="noopener">http://nodejs.cn/download/</a></p>
+<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/es/nodejs.png" srcset="/img/loading.gif" alt=""></p>
+<pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> linux安装设置npm</span>
+[root@PaasRedis01 software]# tar -xvf node-v14.7.0-linux-x64.tar
+[root@PaasRedis01 software]# mv node-v14.7.0-linux-x64 nodejs
+<span class="hljs-meta">#</span><span class="bash"> linux安装设置npm</span>
+vi /etc/profile
+<span class="hljs-meta">#</span><span class="bash"> 在文件最后加上nodejs的bin路径</span>
+export PATH=$PATH:/usr/software/nodejs/bin
+<span class="hljs-meta">#</span><span class="bash"> 让修改配置生效</span>
+source /etc/profile</code></pre>
 
-    <span class="hljs-comment">/**</span>
-<span class="hljs-comment">     * 上传文件</span>
-<span class="hljs-comment">     */</span>
-    <span class="hljs-meta">@RequestMapping</span>(<span class="hljs-string">"/upload"</span>)
-    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">upload</span><span class="hljs-params">()</span> </span>&#123;
-        <span class="hljs-comment">//上传文件</span>
-        <span class="hljs-keyword">return</span> ossUploadService.putObject(<span class="hljs-string">"calvin"</span>, <span class="hljs-string">"test/ccc.jpg"</span>, <span class="hljs-string">"D:\\picture\\ccc.jpg"</span>);
-    &#125;
-&#125;</code></pre>
+<p>查看nodejs是否安装成功</p>
+<pre><code class="hljs shell">[root@PaasRedis01 software]# node --version
+v14.7.0
+[root@PaasRedis01 software]# npm --version
+6.14.7</code></pre>
 
-<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/minio/bucket.png" srcset="/img/loading.gif" alt=""></p>
-<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/minio/ccc.png" srcset="/img/loading.gif" alt=""></p>
-<p><strong>浏览器访问</strong>：<a href="http://10.1.34.12:30900/calvin/test/ccc.jpg" target="_blank" rel="noopener">http://10.1.34.12:30900/calvin/test/ccc.jpg</a></p>
-<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/minio/12.png" srcset="/img/loading.gif" alt=""></p>
-<p>由于是集群，切换另外一个集群测试是否也能访问</p>
-<p><strong>浏览器访问</strong>：<a href="http://10.1.34.15:30900/calvin/test/ccc.jpg" target="_blank" rel="noopener">http://10.1.34.15:30900/calvin/test/ccc.jpg</a></p>
-<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/minio/15.png" srcset="/img/loading.gif" alt=""></p>
-<p>至此，MinIO分布式存储集群已经搭建并验证完毕。</p>
+
+
+<h4 id="3、后台运行"><a href="#3、后台运行" class="headerlink" title="3、后台运行"></a>3、后台运行</h4><pre><code class="hljs shell">[root@PaasRedis01 elasticsearch-head]# nohup npm run start &amp;</code></pre>
+
+
+
+<h4 id="4、查看集群情况"><a href="#4、查看集群情况" class="headerlink" title="4、查看集群情况"></a>4、查看集群情况</h4><p>浏览器访问：<a href="http://10.1.34.49:9100/" target="_blank" rel="noopener">http://10.1.34.49:9100/</a></p>
+<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/es/clusterinfo.png" srcset="/img/loading.gif" alt=""></p>
 
             </article>
             <hr>
@@ -486,7 +480,7 @@ service/minio configured</code></pre>
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/minio/">minio</a>
+                      <a class="hover-with-bg" href="/tags/elasticsearch/">elasticsearch</a>
                     
                   </div>
                 
@@ -499,9 +493,9 @@ service/minio configured</code></pre>
                   <div class="post-prev col-6">
                     
                     
-                      <a href="/2020/08/04/ElasticSearch%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/">
+                      <a href="/2020/08/04/%E5%AE%89%E8%A3%85ES%E5%89%8D%E7%AB%AF%E5%9B%BE%E5%BD%A2%E5%8C%96%E6%93%8D%E4%BD%9C%E5%B7%A5%E5%85%B7Kibana/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">ElasticSearch集群搭建</span>
+                        <span class="hidden-mobile">安装ES前端图形化操作工具Kibana</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -509,8 +503,8 @@ service/minio configured</code></pre>
                   <div class="post-next col-6">
                     
                     
-                      <a href="/2020/08/01/k8s%E6%90%AD%E5%BB%BANacos%E9%9B%86%E7%BE%A4/">
-                        <span class="hidden-mobile">k8s搭建Nacos集群</span>
+                      <a href="/2020/08/02/k8s%E4%B8%AD%E6%90%AD%E5%BB%BAMinIO%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8%E9%9B%86%E7%BE%A4/">
+                        <span class="hidden-mobile">k8s中搭建MinIO分布式存储集群</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -649,7 +643,7 @@ service/minio configured</code></pre>
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "k8s中搭建MinIO分布式存储集群&nbsp;",
+        "ElasticSearch集群搭建&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,

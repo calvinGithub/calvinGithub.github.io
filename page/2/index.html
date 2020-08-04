@@ -17,7 +17,7 @@
   <meta name="description" content="分享电商技术，微服务，面试题，学习笔记">
   <meta name="author" content="calvin">
   <meta name="keywords" content="">
-  <title>归档 - calvin的博客</title>
+  <title>calvin的博客</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -42,7 +42,7 @@
 
 
 <body>
-  <header style="height: 60vh;">
+  <header style="height: 100vh;">
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand"
@@ -226,6 +226,10 @@
           </div>
 
           
+            <div class="scroll-down-bar">
+              <i class="iconfont icon-arrowdown"></i>
+            </div>
+          
         </div>
       </div>
     </div>
@@ -235,51 +239,112 @@
     
       <div class="container nopadding-md">
         <div class="py-5" id="board"
-          >
+          style=margin-top:0>
           
           <div class="container">
             <div class="row">
               <div class="col-12 col-md-10 m-auto">
                 
 
-<div class="list-group">
-  <p class="h4">共计 12 篇文章</p>
-  <hr>
-  
+
+  <div class="row mx-auto index-card">
     
-      
-      <p class="h5">2020</p>
     
-    <a href="/2020/08/04/%E5%AE%89%E8%A3%85ES%E5%89%8D%E7%AB%AF%E5%9B%BE%E5%BD%A2%E5%8C%96%E6%93%8D%E4%BD%9C%E5%B7%A5%E5%85%B7Kibana/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">安装ES前端图形化操作工具Kibana</span>
-      <span style="float: right;">08-04</span>
-    </a>
-  
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/28/%E5%9F%BA%E4%BA%8EAnsible%E8%84%9A%E6%9C%AC%E9%83%A8%E7%BD%B2k8s%E5%8D%95Master%E9%9B%86%E7%BE%A4/">基于Ansible脚本部署k8s单Master集群</a>
+
+      <a href="/2020/07/28/%E5%9F%BA%E4%BA%8EAnsible%E8%84%9A%E6%9C%AC%E9%83%A8%E7%BD%B2k8s%E5%8D%95Master%E9%9B%86%E7%BE%A4/" class="index-excerpt">
+        
+        
+          
+        
+        <div>一、安装要求1、机器要求在开始之前，部署Kubernetes集群机器需要满足以下几个条件：
+
+一台或多台机器，操作系统 CentOS7.x-86_x64
+硬件配置：2GB或更多RAM，2个CPU或更多CPU，硬盘30GB或更多
+集群中所有机器之间网络互通
+可以访问外网，需要拉取镜像，如果服务器不能上网，需要提前下载镜像并导入节点
+禁止swap分区
+
+确保所有节点系统时间一致
+# yum insta</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-28
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/k8s%E5%8D%95Master/">k8s单Master</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
     
-    <a href="/2020/08/04/ElasticSearch%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">ElasticSearch集群搭建</span>
-      <span style="float: right;">08-04</span>
-    </a>
-  
     
-    <a href="/2020/08/02/k8s%E4%B8%AD%E6%90%AD%E5%BB%BAMinIO%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8%E9%9B%86%E7%BE%A4/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">k8s中搭建MinIO分布式存储集群</span>
-      <span style="float: right;">08-02</span>
-    </a>
+    <div class="col-12 col-md-12 mx-auto index-info">
+      <a class="index-header" href="/2020/07/28/Centos7%E5%AE%89%E8%A3%85Ansible%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/">Centos7安装Ansible异常问题排查</a>
+
+      <a href="/2020/07/28/Centos7%E5%AE%89%E8%A3%85Ansible%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/" class="index-excerpt">
+        
+        
+          
+        
+        <div>目标：Centos7系统的机器安装Ansible
+yum源：阿里云
+外网：虚拟机可以连接外网
+出现的问题：直接用命令yum -y install ansible，发现安装不上。
+
+问题排查：
+（1）原来安装ansible，需要先安装epel源
+（2）yum install epel-release
+
+然后yum repolist查看源，发现并没有epel。
+（3）排查机器上是否已经存在epel源：</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-28
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/ansible/">ansible</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+
+
+  <nav aria-label="navigation">
+    <span class="pagination" id="pagination">
+      <a class="extend prev" rel="prev" href="/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    </span>
+  </nav>
   
-    
-    <a href="/2020/08/01/k8s%E6%90%AD%E5%BB%BANacos%E9%9B%86%E7%BE%A4/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">k8s搭建Nacos集群</span>
-      <span style="float: right;">08-01</span>
-    </a>
-  
-    
-    <a href="/2020/08/01/Docker%E5%AE%89%E8%A3%85MySQL/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">Docker安装MySQL</span>
-      <span style="float: right;">08-01</span>
-    </a>
-  
-</div>
+  <script>
+    for (ele of document.getElementById("pagination").getElementsByTagName("a")) {
+      ele.href += '#board';
+    }
+  </script>
 
 
 
@@ -372,7 +437,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "归档&nbsp;",
+        "分享电商技术，微服务，面试题，学习笔记&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,

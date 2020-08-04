@@ -17,10 +17,20 @@
   <meta name="description" content="分享电商技术，微服务，面试题，学习笔记">
   <meta name="author" content="calvin">
   <meta name="keywords" content="">
-  <title>归档 - calvin的博客</title>
+  <title>安装ES前端图形化操作工具Kibana - calvin的博客</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
 
 
 <!-- 主题依赖的图标库，不要自行修改 -->
@@ -42,7 +52,7 @@
 
 
 <body>
-  <header style="height: 60vh;">
+  <header style="height: 70vh;">
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand"
@@ -223,6 +233,40 @@
             </span>
 
             
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-08-04 18:34">
+      2020年8月4日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      470 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      6
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
           </div>
 
           
@@ -233,61 +277,121 @@
 
   <main>
     
-      <div class="container nopadding-md">
-        <div class="py-5" id="board"
-          >
-          
-          <div class="container">
-            <div class="row">
-              <div class="col-12 col-md-10 m-auto">
-                
-
-<div class="list-group">
-  <p class="h4">共计 12 篇文章</p>
-  <hr>
-  
-    
       
-      <p class="h5">2020</p>
-    
-    <a href="/2020/08/04/%E5%AE%89%E8%A3%85ES%E5%89%8D%E7%AB%AF%E5%9B%BE%E5%BD%A2%E5%8C%96%E6%93%8D%E4%BD%9C%E5%B7%A5%E5%85%B7Kibana/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">安装ES前端图形化操作工具Kibana</span>
-      <span style="float: right;">08-04</span>
-    </a>
-  
-    
-    <a href="/2020/08/04/ElasticSearch%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">ElasticSearch集群搭建</span>
-      <span style="float: right;">08-04</span>
-    </a>
-  
-    
-    <a href="/2020/08/02/k8s%E4%B8%AD%E6%90%AD%E5%BB%BAMinIO%E5%88%86%E5%B8%83%E5%BC%8F%E5%AD%98%E5%82%A8%E9%9B%86%E7%BE%A4/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">k8s中搭建MinIO分布式存储集群</span>
-      <span style="float: right;">08-02</span>
-    </a>
-  
-    
-    <a href="/2020/08/01/k8s%E6%90%AD%E5%BB%BANacos%E9%9B%86%E7%BE%A4/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">k8s搭建Nacos集群</span>
-      <span style="float: right;">08-01</span>
-    </a>
-  
-    
-    <a href="/2020/08/01/Docker%E5%AE%89%E8%A3%85MySQL/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">Docker安装MySQL</span>
-      <span style="float: right;">08-01</span>
-    </a>
-  
-</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <p>Kibana是一个针对Elasticsearch的开源分析及可视化平台，用来搜索、查看交互存储在Elasticsearch索引中的数据。使用Kibana，可以通过各种图表进行高级数据分析及展示。</p>
+<p>Kibana让海量数据更容易理解。它操作简单，基于浏览器的用户界面可以快速创建仪表板（dashboard）实时显示Elasticsearch查询动态。</p>
+<p><strong>1、下载安装包</strong></p>
+<p>笔者选用的是跟ES同样的版本，7.6.1，下载地址：<a href="https://artifacts.elastic.co/downloads/kibana/kibana-7.6.1-linux-x86_64.tar.gz" target="_blank" rel="noopener">https://artifacts.elastic.co/downloads/kibana/kibana-7.6.1-linux-x86_64.tar.gz</a></p>
+<p><strong>2、解压安装包</strong></p>
+<pre><code class="hljs shell">[root@PaasMD01 software]# tar -zxvf kibana-7.6.1-linux-x86_64.tar.gz
+[root@PaasMD01 software]# mv kibana-7.6.1-linux-x86_64 kibana</code></pre>
 
 
 
+<p><strong>3、修改kibana配置文件</strong></p>
+<pre><code class="hljs shell">[root@PaasMD01 kibana]# cd config
+[root@PaasMD01 config]# vi kibana.yml
+<span class="hljs-meta">#</span><span class="bash"> 对外服务监听端口</span>
+server.port: 5601
+<span class="hljs-meta">#</span><span class="bash"> 0.0.0.0表示任何地址在没有防火墙限制的情况下都可以访问</span>
+server.host: "0.0.0.0"
+<span class="hljs-meta">#</span><span class="bash"> 默认值为主机名称，表示kibana实例绑定的主机，可以是IP地址或者主机名称.</span>
+server.name: "10.1.34.74"
+<span class="hljs-meta">#</span><span class="bash"> 用来处理ES请求的服务URL</span>
+elasticsearch.hosts:["http://10.1.34.74:9200","http://10.1.34.49:9200","http://10.1.34.50:9200"]
+<span class="hljs-meta">#</span><span class="bash"> 用来控制证书的认证，可选的值为full，none，certificate。此处由于没有证书，所以设置为null，否则启动会提示错误.</span>
+elasticsearch.ssl.verificationMode: none
+<span class="hljs-meta">#</span><span class="bash"> kibana搜索数据请求超时时间</span>
+elasticsearch.requestTimeout: 90000
+<span class="hljs-meta">#</span><span class="bash"> 汉化Kibana</span>
+i18n.locale: "zh-CN"</code></pre>
+
+
+
+<p><strong>4、启动kibana</strong></p>
+<pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 由于kibana不能由root用户启动，新建用户并授权</span>
+[root@PaasMD01 software]# chown -R calvin:calvin /usr/software/kibana/
+[root@PaasMD01 software]# su calvin
+[calvin@PaasMD01 software]$ cd kibana/bin
+[calvin@PaasMD01 bin]$ ./kibana</code></pre>
+
+<p>如果想让kibana后台启动，则使用命令：</p>
+<pre><code class="hljs shell">nohup ./kibana &amp;</code></pre>
+
+<p>浏览器访问：<a href="http://10.1.34.74:5601/app/kibana" target="_blank" rel="noopener">http://10.1.34.74:5601/app/kibana</a></p>
+<p><strong>5、测试es</strong></p>
+<p>为了测试方便，笔者在elasticsearch-head新建了一条索引：test</p>
+<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/es/test.png" srcset="/img/loading.gif" alt=""></p>
+<p>通过kibana查询</p>
+<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/es/kibana_query.png" srcset="/img/loading.gif" alt=""></p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/kibana/">kibana</a>
+                    
+                  </div>
+                
               </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/08/04/ElasticSearch%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/">
+                        <span class="hidden-mobile">ElasticSearch集群搭建</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
             </div>
+
+            
           </div>
         </div>
       </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
     
   </main>
 
@@ -365,6 +469,31 @@
 
 
 
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
 
 
   <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
@@ -372,7 +501,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "归档&nbsp;",
+        "安装ES前端图形化操作工具Kibana&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,
@@ -387,6 +516,21 @@
 
 
 
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
 
 
   <script  src="/js/local-search.js" ></script>
@@ -400,6 +544,20 @@
   </script>
 
 
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
 
 
 
