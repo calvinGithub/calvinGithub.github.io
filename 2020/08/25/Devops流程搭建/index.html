@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="分享电商技术，微服务，面试题，学习笔记">
+  <meta name="author" content="calvin">
+  <meta name="keywords" content="">
+  <title>Devops流程搭建 - calvin的博客</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>calvin的博客</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/java/">
+                    
+                    Java基础
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/docs/guide/" target="_blank" rel="noopener">
+                    
+                    设计模式
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/docs/example/" target="_blank" rel="noopener">
+                    
+                    JVM
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/docs/icon/" target="_blank" rel="noopener">
+                    
+                    Spring源码
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/docs/icon/" target="_blank" rel="noopener">
+                    
+                    微服务实战
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/docs/icon/" target="_blank" rel="noopener">
+                    
+                    常用技术栈
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/operation/">
+                    
+                    运维进阶
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/docs/icon/" target="_blank" rel="noopener">
+                    
+                    数据结构
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/docs/icon/" target="_blank" rel="noopener">
+                    
+                    常用算法
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://hexo.fluid-dev.com/docs/icon/" target="_blank" rel="noopener">
+                    
+                    面试题分享
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('https://ecblog.oss-cn-hangzhou.aliyuncs.com/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-08-25 20:34">
+      2020年8月25日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      27
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <p>GitLab CI/CD是一个内置在GitLab中的工具，用于通过持续方法进行软件开发：</p>
+<ul>
+<li><strong>Continuous Integration (CI) 持续集成</strong></li>
+<li><strong>Continuous Delivery (CD)   持续交付</strong></li>
+<li><strong>Continuous Deployment (CD)  持续部署</strong></li>
+</ul>
+<p>持续集成的工作原理是将小的代码块推送到Git仓库中托管的应用程序代码库中，并且每次推送时，都要运行一系列脚本来构建、测试和验证代码更改，然后再将其合并到主分支中。</p>
+<p>持续交付和部署相当于更进一步的CI，可以在每次推送到仓库默认分支的同时将应用程序部署到生产环境。</p>
+<p>这些方法使得可以在开发周期的早期发现bugs和errors，从而确保部署到生产环境的所有代码都符合为应用程序建立的代码标准。</p>
+<p>GitLab CI/CD 由一个名为 .gitlab-ci.yml 的文件进行配置，改文件位于仓库的根目录下。文件中指定的脚本由GitLab Runner执行。</p>
+<h3 id="一、安装Gitlab-Runner"><a href="#一、安装Gitlab-Runner" class="headerlink" title="一、安装Gitlab Runner"></a>一、安装Gitlab Runner</h3><h4 id="1、GitLab-CI-CD-介绍"><a href="#1、GitLab-CI-CD-介绍" class="headerlink" title="1、GitLab CI/CD 介绍"></a>1、GitLab CI/CD 介绍</h4><p>软件开发的持续方法基于自动执行脚本，以最大程度地减少在开发应用程序时引入错误的机会。从开发新代码到部署新代码，他们几乎不需要人工干预，甚至根本不需要干预。 </p>
+<p>它涉及到在每次小的迭代中就不断地构建、测试和部署代码更改，从而减少了基于已经存在bug或失败的先前版本开发新代码的机会。</p>
+<p><font style="color:red;font-weight:bolder"><strong>Continuous Integration（持续集成）</strong></font></p>
+<p>假设一个应用程序，其代码存储在GitLab的Git仓库中。开发人员每天都要多次推送代码更改。对于每次向仓库的推送，你都可以创建一组脚本来自动构建和测试你的应用程序，从而减少了向应用程序引入错误的机会。这种做法称为持续集成，对于提交给应用程序（甚至是开发分支）的每项更改，它都会自动连续进行构建和测试，以确保所引入的更改通过你为应用程序建立的所有测试，准则和代码合规性标准。 </p>
+<p><font style="color:red;font-weight:bolder"><strong>Continuous Delivery（持续交付）</strong></font></p>
+<p>持续交付是超越持续集成的更进一步的操作。应用程序不仅会在推送到代码库的每次代码更改时进行构建和测试，而且，尽管部署是手动触发的，但作为一个附加步骤，它也可以连续部署。此方法可确保自动检查代码，但需要人工干预才能从策略上手动触发以必输此次变更。</p>
+<p><font style="color:red;font-weight:bolder"><strong>Continuous Deployment（持续部署）</strong></font></p>
+<p>与持续交付类似，但不同之处在于，你无需将其手动部署，而是将其设置为自动部署。完全不需要人工干预即可部署你的应用程序。</p>
+<h4 id="2、安装Gitlab-Runner"><a href="#2、安装Gitlab-Runner" class="headerlink" title="2、安装Gitlab Runner"></a>2、安装Gitlab Runner</h4><p>GitLab-Runner就是一个用来执行软件集成脚本的东西。你可以想象一下：Runner就像一个个的工人，而GitLab-CI就是这些工人的一个管理中心，所有工人都要在GitLab-CI里面登记注册，并且表明自己是为哪个工程服务的。当相应的工程发生变化时，GitLab-CI就会通知相应的工人执行软件集成脚本。</p>
+<p>GitLab-Runner可以分类两种类型：Shared Runner（共享型）和Specific Runner（指定型）。</p>
+<ul>
+<li><strong>Shared Runner</strong>：这种Runner是所有工程都能够用的。只有系统管理员能够创建Shared Runner。</li>
+<li><strong>Specific Runner</strong>：这种Runner只能为指定的工程服务。拥有该工程访问权限的人都能够为该工程创建Shared Runner。</li>
+</ul>
+<p>笔者这里为了防止各个项目执行runner阻塞，选用为每个项目创建一个runner，也就是Specific Runner。</p>
+<p><strong>（1）添加yum源</strong></p>
+<pre><code class="hljs shell">curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-ci-multi-runner/script.rpm.sh | sudo bash</code></pre>
+
+<p><strong>（2）安装runner</strong></p>
+<pre><code class="hljs shell">yum install gitlab-ci-multi-runner</code></pre>
+
+<p><strong>（3）向GitLab-CI注册runner</strong></p>
+<p>向GitLab-CI注册一个Runner需要两样东西：GitLab-CI的url和注册token。其中，token是为了确定你这个Runner是所有工程都能够使用的Shared Runner还是具体某一个工程才能使用的Specific Runner。（如果要注册Shared Runner，你需要到管理界面的Runners页面里面去找注册token。）</p>
+<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/devops/111.png" srcset="/img/loading.gif" alt="image-20200810173257473"></p>
+<p>在下面的register过程中，输入gitlab的url及项目token。</p>
+<pre><code class="hljs shell">[root@k8s-master1 runner]# gitlab-ci-multi-runner register
+Running in system-mode.                            
+                                                   
+Please enter the gitlab-ci coordinator URL (e.g. https://gitlab.com/):
+http://10.1.96.48/
+Please enter the gitlab-ci token for this runner:
+op-J8Y5roq8Ki6TDU9P4
+Please enter the gitlab-ci description for this runner:
+[PaasSVNT]: runner
+Please enter the gitlab-ci tags for this runner (comma separated):
+gitlab,runner
+Whether to run untagged builds [true/false]:
+[false]: true
+Whether to lock Runner to current project [true/false]:
+[false]: false
+Registering runner... succeeded                     runner=6yZMDZBy
+Please enter the executor: docker-ssh, parallels, virtualbox, docker+machine, docker, shell, ssh, docker-ssh+machine, kubernetes:
+shell
+Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!</code></pre>
+
+<p>注册成功后，就能看到特定tag的runner。</p>
+<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/devops/runner.png" srcset="/img/loading.gif" alt=""></p>
+<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/devops/runner-tag.png" srcset="/img/loading.gif" alt=""></p>
+<pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 补充一下命令：</span>
+gitlab-ci-multi-runner restart  重启runner
+gitlab-ci-multi-runner stop     停止runner</code></pre>
+
+
+
+<h3 id="二、编写Gitlab-CI脚本"><a href="#二、编写Gitlab-CI脚本" class="headerlink" title="二、编写Gitlab-CI脚本"></a>二、编写Gitlab-CI脚本</h3><h4 id="1、编写简单的CI脚本测试"><a href="#1、编写简单的CI脚本测试" class="headerlink" title="1、编写简单的CI脚本测试"></a>1、编写简单的CI脚本测试</h4><pre><code class="hljs yml"><span class="hljs-attr">stages:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">test</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">build</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">deploy</span>
+
+<span class="hljs-attr">test:</span>
+  <span class="hljs-attr">stage:</span> <span class="hljs-string">test</span>
+  <span class="hljs-attr">script:</span> 
+    <span class="hljs-bullet">-</span> <span class="hljs-string">echo</span> <span class="hljs-string">"Running tests"</span>
+
+<span class="hljs-attr">build:</span>
+  <span class="hljs-attr">stage:</span> <span class="hljs-string">build</span>
+  <span class="hljs-attr">script:</span> 
+    <span class="hljs-bullet">-</span> <span class="hljs-string">echo</span> <span class="hljs-string">"Building the app"</span>
+
+<span class="hljs-attr">deploy_staging:</span>
+  <span class="hljs-attr">stage:</span> <span class="hljs-string">deploy</span>
+  <span class="hljs-attr">script:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">echo</span> <span class="hljs-string">"Deploy to staging server"</span>
+  <span class="hljs-attr">only:</span>
+  	<span class="hljs-comment"># 在项目哪个分支有效</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">master</span></code></pre>
+
+<p>可以看到执行后的pipeline如下：</p>
+<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/devops/444.png" srcset="/img/loading.gif" alt="image-20200810174723359"></p>
+<p>可以看到流水线按照CI脚本的顺序执行。</p>
+<p>查看其中一个stage，内容如下，按照脚本中编写的执行。</p>
+<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/devops/test.png" srcset="/img/loading.gif" alt=""></p>
+<h4 id="2、实际项目CI案例"><a href="#2、实际项目CI案例" class="headerlink" title="2、实际项目CI案例"></a>2、实际项目CI案例</h4><p>在实际的项目中，我们往往需要通过CI脚本执行更加复杂的操作。笔者的项目中需要实现的是：编译项目-&gt;构建Docker镜像-&gt;推送Docker镜像到私仓。</p>
+<p>由于需要在runner中执行shell命令，我们还需要给安装后的runner默认创建的gitlab-runner用户增加root权限，否则执行shell命令的时候，会提示权限不足。</p>
+<pre><code class="hljs shell">vim /etc/sudoers
+gitlab-runner ALL=(ALL:ALL)  NOPASSWD:ALL</code></pre>
+
+<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/devops/666.png" srcset="/img/loading.gif" alt="image-20200810175627177"></p>
+<p>由于笔者安装的runner在gitlab所在的机器，所以就不需要安装git了。如果是其他机器安装的runner，还需要安装git客户端，确保能下载到最新提交的代码。</p>
+<p>另外我们还需要在runner所在的机器上<strong>安装maven</strong>环境（编译Maven项目）和<strong>Docker</strong>（构建镜像，推送镜像），这两个环境的安装笔者在此省略，请自行百度。</p>
+<p>笔者编写的gitlab-ci脚本内容如下：</p>
+<pre><code class="hljs yml"><span class="hljs-attr">before_script:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">echo</span> <span class="hljs-string">"before_script..."</span>
+  <span class="hljs-comment"># 获取 name</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">export</span> <span class="hljs-string">ARTIFACT_NAME=$(cat</span> <span class="hljs-string">pom.xml</span> <span class="hljs-string">|</span> <span class="hljs-string">grep</span> <span class="hljs-string">"&lt;name&gt;"</span> <span class="hljs-string">|</span> <span class="hljs-string">head</span> <span class="hljs-number">-1</span> <span class="hljs-string">|</span> <span class="hljs-string">cut</span> <span class="hljs-string">-d"&gt;"</span> <span class="hljs-string">-f2</span> <span class="hljs-string">|</span> <span class="hljs-string">cut</span> <span class="hljs-string">-d"&lt;"</span> <span class="hljs-string">-f1</span> <span class="hljs-string">|</span> <span class="hljs-string">awk</span> <span class="hljs-string">'&#123;$1=$1;print&#125;'</span><span class="hljs-string">)</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">echo</span> <span class="hljs-string">$&#123;ARTIFACT_NAME&#125;</span>
+  <span class="hljs-comment"># 获取 version</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">export</span> <span class="hljs-string">VERSION=$(cat</span> <span class="hljs-string">pom.xml</span> <span class="hljs-string">|</span> <span class="hljs-string">grep</span> <span class="hljs-string">"&lt;version&gt;"</span> <span class="hljs-string">|</span> <span class="hljs-string">head</span> <span class="hljs-number">-2</span> <span class="hljs-string">|</span>  <span class="hljs-string">tail</span> <span class="hljs-number">-1</span> <span class="hljs-string">|</span> <span class="hljs-string">cut</span> <span class="hljs-string">-d"&gt;"</span> <span class="hljs-string">-f2</span> <span class="hljs-string">|</span> <span class="hljs-string">cut</span> <span class="hljs-string">-d"&lt;"</span> <span class="hljs-string">-f1</span> <span class="hljs-string">|</span> <span class="hljs-string">awk</span> <span class="hljs-string">'&#123;$1=$1;print&#125;'</span><span class="hljs-string">)</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">echo</span> <span class="hljs-string">$&#123;VERSION&#125;</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">docker</span> <span class="hljs-string">--version</span>
+  <span class="hljs-comment"># DOCKER_USER DOCKER_PASSWORD DOCKER_REGISTRY 这些变量需要在gitlab上有</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">'sudo docker login -u $&#123;DOCKER_USER&#125; -p $&#123;DOCKER_PASSWORD&#125; $&#123;DOCKER_REGISTRY&#125;'</span>
+<span class="hljs-attr">stages:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">build</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">push</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">deploy</span>
+<span class="hljs-attr">build:</span>
+  <span class="hljs-attr">stage:</span> <span class="hljs-string">build</span>
+  <span class="hljs-attr">tags:</span>
+    <span class="hljs-comment"># 使用的runner</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">it-user</span>
+  <span class="hljs-attr">script:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">echo</span> <span class="hljs-string">"starting build project..."</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">mvn</span> <span class="hljs-string">clean</span> <span class="hljs-string">package</span> <span class="hljs-string">-DskipTests=true</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">pwd</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">ls</span> <span class="hljs-string">-a</span>
+  <span class="hljs-attr">artifacts:</span>
+    <span class="hljs-attr">paths:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">target/*.jar</span>
+  <span class="hljs-attr">only:</span>
+    <span class="hljs-comment"># 在哪个分支有效</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">master</span>
+<span class="hljs-attr">push:</span>
+  <span class="hljs-attr">stage:</span> <span class="hljs-string">push</span>
+  <span class="hljs-attr">script:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">echo</span> <span class="hljs-string">"building image..."</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">'sudo docker build -t $&#123;DOCKER_REGISTRY&#125;/$&#123;ARTIFACT_NAME&#125;:$&#123;VERSION&#125; .'</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">echo</span> <span class="hljs-string">"building image success"</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">echo</span> <span class="hljs-string">"pushing image..."</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">'sudo docker push $&#123;DOCKER_REGISTRY&#125;/$&#123;ARTIFACT_NAME&#125;:$&#123;VERSION&#125;'</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">echo</span> <span class="hljs-string">"push success"</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">echo</span> <span class="hljs-string">"delete image..."</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">'sudo docker rmi $&#123;DOCKER_REGISTRY&#125;/$&#123;ARTIFACT_NAME&#125;:$&#123;VERSION&#125;'</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">echo</span> <span class="hljs-string">"delete images success"</span>
+  <span class="hljs-attr">only:</span>
+    <span class="hljs-comment"># 在哪个分支有效</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">master</span>
+<span class="hljs-attr">deploy:</span>
+  <span class="hljs-attr">stage:</span> <span class="hljs-string">deploy</span>
+  <span class="hljs-attr">script:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">echo</span> <span class="hljs-string">"deploy image..."</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">kubectl</span> <span class="hljs-string">get</span> <span class="hljs-string">pods</span> <span class="hljs-string">-n</span> <span class="hljs-string">visionox</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">'sudo kubectl replace --force -f /替换你自己脚本存在的文件夹/$&#123;ARTIFACT_NAME&#125;/ -n 你自己的命名空间'</span>
+  <span class="hljs-attr">only:</span>
+    <span class="hljs-comment"># 在哪个分支有效</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">master</span></code></pre>
+
+<p>将CI脚本放置于project的根目录，指定tag为user的runner。</p>
+<p>另外可以看到，CI脚本中包含很多变量，我们可以通过在gitlab中设置变量。</p>
+<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/devops/777.png" srcset="/img/loading.gif" alt="image-20200810180911969"></p>
+<p>最后，我们看到pipeline已经执行成功。</p>
+<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/devops/pipeline.png" srcset="/img/loading.gif" alt=""></p>
+<p>我们分别进入stage的三个阶段，查看脚本执行情况。</p>
+<p><strong>（1）build：maven编译</strong></p>
+<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/devops/build.png" srcset="/img/loading.gif" alt="image-20200810181543240"></p>
+<p><strong>（2）push：构建Docker镜像并推送到Docker私仓</strong></p>
+<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/devops/push.png" srcset="/img/loading.gif" alt="image-20200810181828091"></p>
+<p><strong>（3）deploy：执行kubectl命令部署服务脚本</strong></p>
+<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/devops/deploy.png" srcset="/img/loading.gif" alt=""></p>
+<h4 id="3、k8s部署微服务脚本"><a href="#3、k8s部署微服务脚本" class="headerlink" title="3、k8s部署微服务脚本"></a>3、k8s部署微服务脚本</h4><pre><code class="hljs yaml"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Service</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">你自己的服务名</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">visionox</span>
+  <span class="hljs-attr">labels:</span>
+    <span class="hljs-attr">app:</span> <span class="hljs-string">你自己的服务名</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">type:</span> <span class="hljs-string">NodePort</span>
+  <span class="hljs-attr">ports:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">port:</span> <span class="hljs-number">10070</span> 
+    <span class="hljs-attr">nodePort:</span> <span class="hljs-number">30070</span>
+  <span class="hljs-attr">selector:</span>
+    <span class="hljs-attr">app:</span> <span class="hljs-string">你自己的服务名</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">apps/v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Deployment</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">你自己的服务名</span>
+  <span class="hljs-attr">labels:</span>
+    <span class="hljs-attr">app:</span> <span class="hljs-string">你自己的服务名</span> 
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">replicas:</span> <span class="hljs-number">1</span>
+  <span class="hljs-attr">selector:</span>
+    <span class="hljs-attr">matchLabels:</span>
+      <span class="hljs-attr">app:</span> <span class="hljs-string">你自己的服务名</span>
+  <span class="hljs-attr">template:</span>
+    <span class="hljs-attr">metadata:</span>
+      <span class="hljs-attr">labels:</span>
+        <span class="hljs-attr">app:</span> <span class="hljs-string">你自己的服务名</span>
+    <span class="hljs-attr">spec:</span>
+      <span class="hljs-attr">nodeSelector:</span>  <span class="hljs-comment"># 指定机器运行</span>
+        <span class="hljs-attr">kubernetes.io/hostname:</span> <span class="hljs-string">paassearch01</span>
+      <span class="hljs-attr">containers:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">你自己的服务名</span>
+        <span class="hljs-attr">image:</span> <span class="hljs-number">10.1</span><span class="hljs-number">.34</span><span class="hljs-number">.7</span><span class="hljs-string">/registry/xxx-user-service:0.0.1-SNAPSHOT</span>
+        <span class="hljs-attr">imagePullPolicy:</span> <span class="hljs-string">Always</span>
+        <span class="hljs-attr">ports:</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-attr">containerPort:</span> <span class="hljs-number">10070</span></code></pre>
+
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/devops/">devops</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/08/04/%E5%AE%89%E8%A3%85ES%E5%89%8D%E7%AB%AF%E5%9B%BE%E5%BD%A2%E5%8C%96%E6%93%8D%E4%BD%9C%E5%B7%A5%E5%85%B7Kibana/">
+                        <span class="hidden-mobile">安装ES前端图形化操作工具Kibana</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <!--<div>-->
+      <!--<a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>-->
+      <!--<i class="iconfont icon-love"></i>-->
+      <!--<a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">-->
+        <!--<span>Fluid</span></a>-->
+    <!--</div>-->
+    
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "Devops流程搭建&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
