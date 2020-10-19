@@ -17,10 +17,20 @@
   <meta name="description" content="分享电商技术，微服务，面试题，学习笔记">
   <meta name="author" content="calvin">
   <meta name="keywords" content="">
-  <title>标签 - calvin的博客</title>
+  <title>数据结构与算法第01篇-复杂度分析 - calvin的博客</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
 
 
 <!-- 主题依赖的图标库，不要自行修改 -->
@@ -42,7 +52,7 @@
 
 
 <body>
-  <header style="height: 80vh;">
+  <header style="height: 70vh;">
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand"
@@ -223,6 +233,40 @@
             </span>
 
             
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-10-19 21:37">
+      2020年10月19日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      235 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      2
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
           </div>
 
           
@@ -233,24 +277,119 @@
 
   <main>
     
-      <div class="container nopadding-md">
-        <div class="py-5" id="board"
-          >
-          
-          <div class="container">
-            <div class="row">
-              <div class="col-12 col-md-10 m-auto">
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <p>算法是用于解决特定问题的一系列的执行步骤。使用不同算法，解决同一个问题，效率可能相差比较大。因此我们需要有一个评判标准来判断所写的算法好坏。</p>
+<p>一般用大O表示法来描述复杂度，它表示的是数据规模n对应的复杂度。注意的是，大O表示法仅仅是一种粗略的分析模型，是一种估算，能帮助我们短时间内了解一个算法的执行效率。</p>
+<p><strong>常见的复杂度</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">执行次数</th>
+<th align="center">复杂度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">12</td>
+<td align="center">O(1)</td>
+</tr>
+<tr>
+<td align="center">2n+3</td>
+<td align="center">O(n)</td>
+</tr>
+<tr>
+<td align="center">4n²+2n+6</td>
+<td align="center">O($n^2$)</td>
+</tr>
+<tr>
+<td align="center">$4log_2n$+25</td>
+<td align="center">O($logn$)</td>
+</tr>
+<tr>
+<td align="center">3n+$2nlog_3n$+15</td>
+<td align="center">O(nlogn)</td>
+</tr>
+<tr>
+<td align="center">$4n^3+3n²+22n+100$</td>
+<td align="center">O($n^3$)</td>
+</tr>
+<tr>
+<td align="center">$2^n$</td>
+<td align="center">O($n^2$)</td>
+</tr>
+</tbody></table>
+<p>我们可以借助函数生成工具对比复杂度的大小：<a href="https://zh.numberempire.com/graphingcalculator.php" target="_blank" rel="noopener">https://zh.numberempire.com/graphingcalculator.php</a></p>
+<p>可以发现，当数据规模较小时</p>
+<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/algorithm/%E7%AE%97%E6%B3%95-01.png" srcset="/img/loading.gif" alt=""></p>
+<p>当数据规模较大时</p>
+<p><img src="https://ecblog.oss-cn-hangzhou.aliyuncs.com/algorithm/%E7%AE%97%E6%B3%95-002.png" srcset="/img/loading.gif" alt=""></p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
                 
-
-<div class="text-center tagcloud">
-  <a href="/tags/ansible/" style="font-size: 15px; color: #bbe">ansible</a> <a href="/tags/devops/" style="font-size: 15px; color: #bbe">devops</a> <a href="/tags/elasticsearch/" style="font-size: 15px; color: #bbe">elasticsearch</a> <a href="/tags/harbor/" style="font-size: 15px; color: #bbe">harbor</a> <a href="/tags/k8s%E5%8D%95Master/" style="font-size: 15px; color: #bbe">k8s单Master</a> <a href="/tags/k8s%E5%A4%9AMaster/" style="font-size: 15px; color: #bbe">k8s多Master</a> <a href="/tags/kibana/" style="font-size: 15px; color: #bbe">kibana</a> <a href="/tags/minio/" style="font-size: 15px; color: #bbe">minio</a> <a href="/tags/mysql/" style="font-size: 15px; color: #bbe">mysql</a> <a href="/tags/nacos/" style="font-size: 15px; color: #bbe">nacos</a> <a href="/tags/nexus/" style="font-size: 15px; color: #bbe">nexus</a> <a href="/tags/redis%E9%9B%86%E7%BE%A4/" style="font-size: 15px; color: #bbe">redis集群</a> <a href="/tags/yaml/" style="font-size: 15px; color: #bbe">yaml</a> <a href="/tags/%E5%A4%8D%E6%9D%82%E5%BA%A6/" style="font-size: 15px; color: #bbe">复杂度</a> <a href="/tags/%E7%9B%91%E6%8E%A7/" style="font-size: 15px; color: #bbe">监控</a>
-</div>
-
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%A4%8D%E6%9D%82%E5%BA%A6/">复杂度</a>
+                    
+                  </div>
+                
               </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/08/25/%E6%90%AD%E5%BB%BAkubernetes%E9%9B%86%E7%BE%A4%E7%9B%91%E6%8E%A7/">
+                        <span class="hidden-mobile">搭建kubernetes集群监控</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
             </div>
+
+            
           </div>
         </div>
       </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
     
   </main>
 
@@ -328,6 +467,31 @@
 
 
 
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
 
 
   <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
@@ -335,7 +499,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "标签&nbsp;",
+        "数据结构与算法第01篇-复杂度分析&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,
@@ -350,6 +514,21 @@
 
 
 
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
 
 
   <script  src="/js/local-search.js" ></script>
@@ -363,6 +542,20 @@
   </script>
 
 
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
 
 
 
